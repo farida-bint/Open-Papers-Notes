@@ -6,7 +6,7 @@ Pour effectuer une segmentation sémantique, des jeux de données annotés au ni
 
 L'apprentissage non-supervisé / auto-supervisé (self-supervised learning) vise à résoudre ce problème en permettant aux algorithmes de Machine Learning de générer des modèles prédictifs sans données étiquetées, par un opérateur humain.
 
-Une telle segmentation semantique, non-supervisée
+Une telle segmentation semantique, non-supervisée présente des avantages a savoir, la réduction du coût de l'annotation et la découverte de classes qui ne pouvait être découvertes par l'homme.
 
 ## Problem Statement
 
