@@ -22,9 +22,7 @@ La méthode de l'article présenté dans ces notes, **STEGO**, résouds le probl
 
 Cependant, pour former de bons clusters, chaque pixel doit être converti en une representation de caractérisiques, sauf que ces representations ne sont pas données à priori.
 
-Ainsi, un challenge pour ce problème (segmentation sémantique non supervisée) est de trouver une bonne representation de caractéristiques des points de données, ce qui néccéssite les **labels de classes.**
-
-Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Il s'avère que l'application de l'auto-supervision aux transformateurs d'images conduit aux propriétés souhaitables suivantes :
+Ainsi, un challenge pour ce problème (segmentation sémantique non supervisée) est de trouver une bonne representation de caractéristiques des points de données. Ce qui néccéssite les **labels de classes,** pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Il s'avère que l'application de l'auto-supervision aux transformateurs d'images conduit aux propriétés souhaitables suivantes :
 
 - Le modèle apprend à segmenter sémantiquement un objet et à créer des délimitations. Ces informations sont accessibles via les modules d'auto-attention.
 - Les représentations de caractéristiques apprises sont très utiles pour le clustering.
