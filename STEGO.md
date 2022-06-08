@@ -22,7 +22,7 @@ Cependant, pour former de bons clusters, chaque pixel doit être converti en une
 
 Ainsi, un challenge pour ce problème est de trouver une bonne representation de caractéristiques des points de données, ce qui néccéssite les labels de classes.
 
-Pour cette raison, **STEGO** est construit qu dessus de **DINO**, un algorithme de 
+Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT).
 
 
 ## Method Overview
