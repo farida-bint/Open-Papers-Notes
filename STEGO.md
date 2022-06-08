@@ -26,11 +26,15 @@ Par conséquent, un challenge pour le problème suscité est de trouver une bonn
 
 Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Ce modèle apprend à segmenter sémantiquement un objet et à créer des délimitations via les modules d'auto-attention. Les représentations de caractéristiques ainsi apprises sont ensuite utilisées lors du processus de distillation comme des pseudo-labels.
 
-En d'autres mots, l'idée générale est de trouver une représentation (correpondance) de caractéristiques pour chaque pixel par le biais d'un modèle de ML pré-entrainé, utiliser ces caractéristiques comme pseudo-labels et ensuite d'effectuer une distillation de ces dernières pour séparer les caractéristiques robustes(ou les plus signicatives) de celles non robustes pour enfin former des clusters compactes  caractéristiques
+En d'autres mots, l'idée générale est de trouver une représentation (correpondance) de caractéristiques pour chaque pixel par le biais d'un modèle de ML pré-entrainé, utiliser ces caractéristiques comme pseudo-labels, ensuite effectuer une distillation de ces dernières pour séparer les caractéristiques robustes(ou les plus signicatives) de celles non robustes pour enfin former des clusters compactes.
 
 ## Method Overview
 
+DINO learns representations with remarkably good performances, in this paper, the authors show that an inferior ﬁne-tuning of the pre-trained DINO softened outputs, can be signiﬁcantly improved by a simple post-processing in the form of feature distillation
 
+~~Self-supervised learning (SSL) is a relatively novel technique in which a model learns from unlabeled data, and is often used when the data is corrupted or if there is very little of it.~~ A practical use for SSL is to create intermediate embeddings that are learned from the data. These embeddings are based on the dataset itself, with similar images having similar embeddings, and vice versa. They are then attached to the rest of the model, which uses those embeddings as information and effectively learns and makes predictions properly. These embeddings, ideally, should contain as much information and insight about the data as possible, so that the model can make better predictions. However, a common problem that arises is that the model creates embeddings that are redundant. For example, if two images are similar, the model will create embeddings that are just a string of 1's, or some other value that contains repeating bits of information. This is no better than a one-hot encoding or just having one bit as the model’s representations; it defeats the purpose of the embeddings, as they do not learn as much about the dataset as possible. For other approaches, the solution to the problem was to carefully configure the model such that it tries not to be redundant.
+
+Specifically, for an unlabelled image $x_i(i=1,...,n)$, let $f_o(x)$ be the feature tensor obtained by $f_o$
 
 
 
