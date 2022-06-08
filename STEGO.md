@@ -16,6 +16,9 @@ Considérons la tâche de cartographie d'un corpus d'images (par exemple l'image
 
 Pour un jeu de données non labelisé dans un domaine $**D**$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
 
+
+## Method Overview
+
 La méthode de l'article présenté dans ces notes, **STEGO**, résouds le problème précédent en se basant sur un clustering au niveau des pixels. En effet, chaque pixel d'image est affecté à un cluster.
 
 Cependant, pour former de bons clusters, chaque pixel doit être converti en une representation de caractérisiques, sauf que ces representations ne sont pas données à priori.
@@ -24,11 +27,9 @@ Ainsi, un challenge pour ce problème est de trouver une bonne representation de
 
 Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT).
 
+### DINO
 
-## Method Overview
-
-
-
+Dino utilise une méthode d'auto-distillation. L'auto-distillation créé un réseau *Student* et *Teacher*. Ces deux réseaux ont exactement la même architecture de modèle. est formé en faisant correspondre la sortie d'un réseau *Teacher*. L'entrée de chaque réseau est une version différente de l'image originale (augmentation des données). Le recadrage global est appliqué pour le réseau des enseignants et le recadrage global et local est utilisé pour le réseau des étudiants. Le but est d'apprendre au réseau que la représentation est la même puisqu'il s'agit de la même image d'origine.
 
 
 ## Takeaways
