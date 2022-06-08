@@ -7,6 +7,10 @@
 ## Method Overview
 
 ## Takeaways
+
+### Contribution
+
+### Main Idea
 ---
 ## Application to Underwater Imagery
 
