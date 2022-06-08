@@ -24,8 +24,7 @@ Cependant, pour former de bons clusters, chaque pixel doit être converti en une
 
 Par conséquent, un challenge pour le problème suscité est de trouver une bonne representation de caractéristiques des points de données. Ce qui néccéssite les **labels de classes,** de ce fait, une méthode d'apprentisage auto-supervisée peut être utilisée pour apprendre à retrouver les informations utiles des données, sans supervision et ainsi générer des représentations d'un ensemble d'observations.
 
-Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Ce modèle apprend à segmenter sémantiquement un objet et à créer des délimitations via les modules d'auto-attention. Les représentations de caractéristiques apprises sont ensuite utilisées pour lors de la distillation.
-
+Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Ce modèle apprend à segmenter sémantiquement un objet et à créer des délimitations via les modules d'auto-attention. Les représentations de caractéristiques aisni apprises sont ensuite utilisées lors du processus de distillation comme des pseudo-labels.
 
 ## Method Overview
 
