@@ -14,12 +14,16 @@ Une telle segmentation semantique, non-supervisée présente des avantages a sav
 
 Considérons la tâche de cartographie d'un corpus d'images (par exemple l'imagerie sous-marine, qui manquent souvent de grandes quantités de données étiquetées); en utilisant une approche de segmentation sémantique non supervisée.
 
-Pour un jeu de données non labelisé dans un domaine $D$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles $C$ dans une image et d'apprendre une fonction $f$ qui va attribuer une de ces classes a chaque pixel de l'image prise dans $D$.
+Pour un jeu de données non labelisé dans un domaine **$D$**, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
 
-La méthode de l'article présenté dans ces notes, STEGO, résouds le problème précédent en se basant sur un clustering au niveau des pixels. En effet, chaque pixel d'image est affecté à un cluster.
+La méthode de l'article présenté dans ces notes, **STEGO**, résouds le problème précédent en se basant sur un clustering au niveau des pixels. En effet, chaque pixel d'image est affecté à un cluster.
+
+Cependant, pour former de bons clusters, chaque pixel doit être converti en une representation de ses caractérisiques
 
 
 ## Method Overview
+
+
 
 ## Takeaways
 
