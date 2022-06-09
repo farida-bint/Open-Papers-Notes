@@ -18,9 +18,9 @@ Pour un jeu de données non labelisé dans un domaine $**D**$, la tâche sous la
 
 ## Background
 
-Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif. En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classificatin ou de segmentation.
+Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif. En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classification ou de segmentation.
 
-More specifically, you have an image and you augment it in different ways, you presented the two images to the model and you teach two copies of the same network (same weights), and let the model decide as follow : looking at these two inputs, they might seem different but they are in fact the same (they are from the same image). We can how this objective can give us a sort of representation because the model learns features correspondences from similar inputs (what kind of stuff is likely to be in the same image).
+Plus précisément, nous avons une image et nous l'augmentons de différentes manières. Ensuite, nous présentons ces deux images au modèle qui apprend deux copies du même réseau (poids partagés), et nous laissons le modèle décider ce qui suit : en regardant ces deux entrées, elles peuvent sembler différentes mais elles sont en fait les mêmes (elles proviennent de la même image). Nous pouvons donc voir comment cet objectif peut nous donner une sorte de représentation parce que le modèle apprend les correspondances entre les caractéristiques à partir d'entrées similaires (quel genre de contenu est susceptible d'être présent sur la même image).
 
 ## Main Idea
 
@@ -29,19 +29,25 @@ La méthode de l'article présenté dans ces notes, **STEGO**, consiste à préd
 
 ## Method Overview
 
-> Méthode de distillation de caractéristiques
+STEGO apprend les représentations de features en maximisant l'alignement des éléments similaires via une perte contrastive dans l'espace latent. De facon analogique a l'architecture classique d'un CNN, the entire process of l'architecture du modele can be described concisely in three baselines steps:
 
-Avec un modele deja pré-entrainé, DINO dans ce cas, l'objectif de cet article est d'obtenir une nouvelle représentation qui distille la connaissance apprise du modele pré-entrainé tout en adaptant la fonction d'erreur. La méthode de distillation des caractéristiques proposée utilise donc les sorties de DINO comme signal de supervision. En effet, STEGO recoit les sorties de DINO comme entrée pour la téte de segmentation qui n'est autre qu'un reseau de projection des représentations d'un espace vectoriel vers un espace d'encodage.
+> Extraction de caractéristiques (encodage)
+
+En utilisant un modele pré-entrainé, DINO dans ce cas, l'objectif de cette étape est d'obtenir les descripteurs sémantiques pour une image en entrée
+
+Soit pour une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o[p]$ la représentation du pixel $p de x$.
+
+> Classification (segmentation)
+
+> Minimisation de la perte
+
+Avec un modele deja pré-entrainé, DINO dans ce cas, l'objectif de cet article est d'obtenir une nouvelle représentation qui distille la connaissance apprise de DINO tout en adaptant la fonction d'erreur. La méthode de distillation des caractéristiques proposée utilise donc les sorties de DINO comme signal de supervision. En effet, STEGO recoit les sorties de DINO comme entrée pour la téte de segmentation qui n'est autre qu'un reseau de projection des représentations d'un espace vectoriel vers un espace d'encodage.
 
 >Training process
 
 DINO create intermediate embeddings that are learned from the data. These embeddings are based on the dataset itself, with similar images having similar embeddings, and vice versa. They are then attached to the rest of the model, which uses those embeddings as information and effectively learns and makes predictions properly. These embeddings, ideally, should contain as much information and insight about the data as possible, so that the model can make better predictions. However, a common problem that arises is that the model creates embeddings that are redundant. For example, if two images are similar, the model will create embeddings that are just a string of 1's, or some other value that contains repeating bits of information. This is no better than a one-hot encoding or just having one bit as the model’s representations; it defeats the purpose of the embeddings, as they do not learn as much about the dataset as possible. For other approaches, the solution to the problem was to carefully configure the model such that it tries not to be redundant.
 
-DINO apprend des représentations avec des performances remarquablement bonnes, dans cet article, les auteurs montrent qu'une ﬁne mise au point des sorties pré-apprises de DINO, peut être améliorée de manière signiﬁcative par un simple post-traitement sous forme de distillation de caractéristiques.
 
-~~Self-supervised learning (SSL) is a relatively novel technique in which a model learns from unlabeled data, and is often used when the data is corrupted or if there is very little of it.~~ A practical use for SSL is to 
-
-Specifically, for an unlabelled image $x_i(i=1,...,n)$, let $f_o(x)$ be the feature tensor obtained by $f_o$
 
 
 
