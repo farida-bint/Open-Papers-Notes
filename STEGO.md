@@ -1,6 +1,6 @@
 # STEGO Paper Notes
 ---
-## Background
+## Context
 
 Pour effectuer une segmentation sémantique, des jeux de données annotés au niveau du pixel sont importants. Néamoins, dans la réalité, de tels ensembles de données ne sont pas toujours disponibles en raison du coût élevé de l'annotation des images. Ce qui signifie qu'un effort humain considérable doit être fait dans la simple création d'étiquettes, de plus, pour certaines thématiques, l'étiquetage des données néccessite une bonne expertise du domaine de la part de l'annotateur. Prenons par exemple le cas des images médicales de cancer, il faut ếtre un spécialiste aguéri pour catégoriser l'ensemble de pixels d'une tumeur de benigne ou non.
 
@@ -18,24 +18,13 @@ Pour un jeu de données non labelisé dans un domaine $**D**$, la tâche sous la
 
 ## Background
 
-Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif. En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les points de données similaires et ceux qui sont différents.  
+Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif. En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classificatin ou de segmentation.
 
 More specifically, you have an image and you augment it in different ways, you presented the two images to the model and you teach two copies of the same network (same weights), and let the model decide as follow : looking at these two inputs, they might seem different but they are in fact the same (they are from the same image). We can how this objective can give us a sort of representation because the model learns features correspondences from similar inputs (what kind of stuff is likely to be in the same image).
 
 ## Main Idea
 
-La méthode de l'article présenté dans ces notes, **STEGO**, résouds le problème précédent en se basant sur une distillation sémantique entre les correspondances de caractéristiques, ~~une méthode de clustering au niveau des pixels. En effet, chaque pixel d'image est affecté à un cluster~~.
-
-Cependant, pour former de bons clusters, chaque pixel doit être converti en une representation de caractérisiques, sauf que ces representations ne sont pas données à priori.
-
-Par conséquent, un challenge pour le problème suscité est de trouver une bonne representation de caractéristiques des points de données. Ce qui néccéssite les **labels de classes,** de ce fait donc, une méthode d'apprentisage auto-supervisée peut être utilisée pour apprendre à retrouver les informations utiles des données, sans supervision et ainsi générer des représentations d'un ensemble d'observations.
-
-Pour cette raison, **STEGO** est construit au dessus de **DINO**, un modèle d'apprentissage auto-supervisé basé sur un *Vision Transformer* (ViT). Ce modèle apprend à segmenter sémantiquement un objet et à créer des délimitations via les modules d'auto-attention. Les représentations de caractéristiques ainsi apprises sont ensuite utilisées lors du processus de distillation comme des pseudo-labels.
-
-En d'autres mots, l'idée générale est de trouver une représentation (correpondance) de caractéristiques pour chaque pixel par le biais d'un modèle de ML pré-entrainé, utiliser ces caractéristiques comme pseudo-labels, ensuite effectuer une distillation de ces dernières pour séparer les caractéristiques robustes(ou les plus signicatives) de celles non robustes pour enfin former des clusters compactes.
-
-
-La méthode de l'article présenté dans ces notes, **STEGO**, aims to predict classes for each object that have the same patterns as the features themselves. To accomplish this, the authors take images and featurize them with a frozen visual transformer, extract their feature correspondence tensor to serve as a supervisory signal. Moreover, they learn a slight transformation that they call the segmentation head, which simply is a projection network where arise a dimensionality reduction, this will output segmentation embeddings which will probably distill and amplify the structure of the features. At the end, they replicate this process across pairs of images and k-nearest neighbors, images and themselves, images and random other images in the collection. 
+La méthode de l'article présenté dans ces notes, **STEGO**, consiste à prédire des classes pour chaque objet qui ont les mêmes motifs que les features de ces derniers. Pour ce faire, les auteurs prennent des images et les caractérisent à l'aide d'un transformateur visuel qu'ils ont figé a l'avance, puis extraient la matrice de corrélation de ces features pour servir de signal de supervision. En outre, ils apprennent une légère transformation qu'ils appellent la tête de segmentation, qui n'est simplement qu'un réseau de projection où se tient une réduction de dimensionnalité, ce qui produira des representations de segmentation. Ces dernieres distilleront et amplifieront probablement la structure des features. À la fin, les auteurs répliquent ce processus sur des paires, d'images et de k-voisins les plus proches, sur des images et elles mêmes, sur des images et d'autres images aléatoires de la même collection.
 
 
 ## Method Overview
