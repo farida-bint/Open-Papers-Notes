@@ -29,55 +29,55 @@ La méthode de l'article présenté dans ces notes, **STEGO**, consiste à préd
 
 ## Method Overview
 
-STEGO apprend les représentations de features en maximisant l'alignement des objets identifiés via une perte contrastive dans l'espace latent. L'objectif etant que le modele produise des représentations similaires pour des images similaires. 
+STEGO apprend les représentations de features en maximisant l'alignement des objets identifiés via une perte contrastive dans l'espace latent. L'objectif étant que le modèle produise des représentations similaires pour des images similaires. 
 
-De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modele peut être décrit en 3 étapes formant la partie baseline :
+De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
 
 > Extraction de caractéristiques (encodage)
 
-En utilisant un modele pré-entrainé, DINO dans ce cas, que nous pouvons considérer comme une simple focntion $h = f_o$, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
+En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer comme une simple focntion $h = f_o$, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
 > Classification (segmentation)
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de projection, $z = g(h)$ pour transformer les données dans un autre espace. Les auteurs ont montré que cette étape améliorent les performances du modele.
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de projection, $z = g(h)$ pour transformer les données dans un autre espace. Les auteurs ont montré que cette étape améliore les performances du modèle.
 
-En projetant les images dans une représentation spatiale latente, le modele est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
+En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur les features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
+Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
-Pour bien comprendre cette fonction, enoncons le probleme a resoudre ici.
+Pour bien comprendre cette fonction, énoncons le problème a résoudre ici.
 
 Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des cartes de segmentations comme suit:
 
-- si deux points de données sont similaires avant la transformation, ils doivent être plus proches apres la transformation, c'est a dire que la distance entre doit être petite (*small*)
-- 
-- si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est a dire que la distance entre les deux doit être grande (*large*)
+- si deux points de données sont similaires avant la transformation, ils doivent être plus proches apres la transformation, c'est à dire que la distance entre eux doit être petite (*small*)
+
+- si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
 > Minimisation de la perte
 
 Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les cartes de segmentations $z$ produites (niveau des caractéristiques : haut).
 
-Puisque nous comparons deux vecteurs, un choix naturel est le cosinus de similarité.
+Puisque nous comparons deux vecteurs, le choix naturel est le cosinus de similarité.
 
-Pour calculer la perte du modele, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'a l'etape 1, les features maps produites sont considérés comme des pseudo-labels. 
+Pour calculer la perte du modèle, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites sont considérés comme des pseudo-labels. 
 
-Cependant, au lieu de classer $z_i$ a $h_i'$, nous voudrions prédire si une paire ($z_i$, $h_i'$) correspond ou pas. En d'autres mots, trouver si pour tout element de z prédit, il y a compatibilité avec un élément de h.
+Cependant, au lieu de classer un $z_i$ à un $h_i'$, nous voudrions prédire si une paire ($z_i$, $h_i'$) correspond ou pas. En d'autres mots, trouver si pour tout élément de z prédit, il y a compatibilité avec un élément de h.
 
-En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient a :
+En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient à :
 
-1. extraire les pseudo-labels des 2 images, qui doivent être également similaires, on calcule donc la matrice de correlation entre les 2 vecteurs de caractéristiques pour identifier les correspondances entre les 2.
+1. Extraire les pseudo-labels des 2 images, qui doivent être également similaires, on calcule donc la matrice de corrélation entre les 2 vecteurs de caractéristiques pour identifier les correspondances entre les 2.
  
-2. Effectuer la classification (regrouper les pixels proches pour former les classes d'objets) sur les 2 vecteurs de caractéristiques. Les cartes de segmentations doivent être également similaires, on calcule aussi la matrice de correlation entre les 2 cartes
+2. Effectuer la classification (regrouper les pixels proches pour former les classes d'objets) sur les 2 vecteurs de caractéristiques. Les cartes de segmentations doivent être également similaires, on calcule aussi leur matrice de corrélation.
  
-3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existent une correlation entre des points de données de leurs pseudo-labels évoluant de la même facon. C'est a dire que s'il existe des paires de points de données des pseudo-labels qui lorsqu'ils sont proches produisent une des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
+3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
-Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient a calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis a jour). Le fonction d'erreur vise donc a minimiser cette distance de facon a maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactifications).
+Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis à jour). Le fonction d'erreur vise donc a minimiser cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactification).
 
 > Introduction des biais
 
-Par additionau processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux certaines observations présentées dans l'article, et que nous élaborerons ultérieurement.
+Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux différentes observations présentées dans l'article, et que nous élaborerons ultérieurement.
 
 ---
 ## Application to Underwater Imagery
