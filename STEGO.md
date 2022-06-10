@@ -80,6 +80,14 @@ Pour résumé, en fonction du résultat de correspondance entre les vecteurs de 
 Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux différentes observations présentées dans l'article, et que nous élaborerons ultérieurement.
 
 ---
+## Takeaways
+
+Ici nous présentons ce que nous retenons de l'article et améliorons les explications plus haut
+
+
+
+
+---
 ## Application to Underwater Imagery
 
 ### Data Characteristics
