@@ -84,6 +84,14 @@ Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introdu
 
 Ici nous présentons ce que nous retenons de l'article et améliorons les explications plus haut
 
+> Feature Similarity Learning
+
+L'objectif principal est d'apprendre une fonction de similarité entre les descripteurs de caractéristiques. Étant donné deux représentations $G_1$,$G_2$ , un modèle de similarité de graphes peut être écrit comme une fonction $f(G_1,G_2)$ qui calcule une valeur scalaire de similarité.
+
+Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre une telle fonction de similarité sur la base d'exemples de paires similaires/différents.
+
+Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Mais notons que une fonction de distance c'est juste le contraire d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
+
 
 
 
