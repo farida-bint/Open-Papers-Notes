@@ -1,6 +1,6 @@
 # STEGO Paper Notes
 ---
-## Context
+## Context / Contexte
 
 Pour effectuer une segmentation sémantique, des jeux de données annotés au niveau du pixel sont importants. Néamoins, dans la réalité, de tels ensembles de données ne sont pas toujours disponibles en raison du coût élevé de l'annotation des images. Ce qui signifie qu'un effort humain considérable doit être fait dans la simple création d'étiquettes, de plus, pour certaines thématiques, l'étiquetage des données néccessite une bonne expertise du domaine de la part de l'annotateur. Prenons par exemple le cas des images médicales de cancer, il faut ếtre un spécialiste aguéri pour catégoriser l'ensemble de pixels d'une tumeur de benigne ou non.
 
@@ -10,24 +10,24 @@ L'apprentissage non-supervisé / auto-supervisé (self-supervised learning) vise
 
 Une telle segmentation sémantique, non-supervisée présente des avantages a savoir, la réduction du coût de l'annotation et la découverte de classes qui ne pouvait être identifiées par l'homme.
 
-## Problem Statement
+## Problem Statement / Probleme de recherche
 
 Considérons la tâche de cartographie d'un corpus d'images, en utilisant une approche de segmentation sémantique non supervisée.
 
 Pour un jeu de données non labelisé dans un domaine $D$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
 
-## Background
+## Background / Travaux Connexes
 
 Cet article tire son inspiration au travers du succès des travaux antérieurs basés sur un apprentissage auto-supervisé de features, à l'instar de l'apprentissage contrastif (ou de comparaison, qui neccéssite des examples négatifs pour fonctionner). En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classification ou de segmentation.
 
 Plus précisément, nous avons une image et nous l'augmentons de différentes manières. Ensuite, nous présentons ces deux images au modèle qui apprend deux copies du même réseau (poids partagés), et nous laissons le modèle décider ce qui suit : en regardant ces deux entrées, elles peuvent sembler différentes mais elles sont en fait les mêmes (elles proviennent de la même image). Nous pouvons donc voir comment cet objectif peut nous donner une sorte de représentation parce que le modèle apprend les correspondances entre les caractéristiques à partir d'entrées similaires (quel genre de contenu est susceptible d'être présent sur la même image).
 
-## Main Idea
+## Main Idea / Idée générale
 
 La méthode de l'article présenté dans ces notes, **STEGO**, consiste à prédire des classes pour chaque objet qui ont les mêmes motifs que les features de ces derniers. Pour ce faire, les auteurs prennent des images et les caractérisent à l'aide d'un transformateur visuel qu'ils ont figé a l'avance, puis extraient la matrice de corrélation de ces features pour servir de signal de supervision. En outre, ils apprennent une légère transformation qu'ils appellent la tête de segmentation, qui n'est simplement qu'un réseau de projection où se tient une réduction de dimensionnalité, ce qui produira des representations de segmentation. Ces dernières distilleront et amplifieront probablement la structure des features. À la fin, les auteurs répliquent ce processus sur des paires, d'images et de k-voisins les plus proches, sur des images et elles mêmes, sur des images et d'autres images aléatoires de la même collection d'images en entrée.
 
 
-## Method Overview
+## Method / Méthode
 
 STEGO apprend les représentations de features en maximisant l'alignement des objets identifiés via une perte contrastive dans l'espace latent. L'objectif étant que le modèle produise des représentations similaires pour des images similaires. 
 
@@ -80,11 +80,11 @@ Pour résumé, en fonction du résultat de correspondance entre les vecteurs de 
 Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux différentes observations présentées dans l'article, et que nous élaborerons ultérieurement.
 
 ---
-## Takeaways
+## Takeaways / Résumé
 
 Ici nous présentons ce que nous retenons de l'article et améliorons les explications plus haut
 
-> Feature Similarity Learning
+> Feature Similarity Learning / Apprentissage des correspondances entre les caractéristiques
 
 L'objectif principal est d'apprendre une fonction de similarité entre les descripteurs de caractéristiques. Étant donné deux représentations $G_1$,$G_2$ , un modèle de similarité de représentations peut être écrit comme une fonction $f(G_1,G_2)$ qui calcule une valeur scalaire de similarité.
 
@@ -96,8 +96,8 @@ Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que l
 
 
 ---
-## Application to Underwater Imagery
+## Application to underwater imagry / Application à l'imagerie sous-marine
 
-### Data Characteristics
+### Caractéristiques des données / Data Characteristics
 
-### Challenges
+### Challenges / Défis
