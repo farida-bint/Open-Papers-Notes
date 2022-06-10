@@ -86,7 +86,7 @@ Ici nous présentons ce que nous retenons de l'article et améliorons les explic
 
 > Feature Similarity Learning
 
-L'objectif principal est d'apprendre une fonction de similarité entre les descripteurs de caractéristiques. Étant donné deux représentations $G_1$,$G_2$ , un modèle de similarité de graphes peut être écrit comme une fonction $f(G_1,G_2)$ qui calcule une valeur scalaire de similarité.
+L'objectif principal est d'apprendre une fonction de similarité entre les descripteurs de caractéristiques. Étant donné deux représentations $G_1$,$G_2$ , un modèle de similarité de représentations peut être écrit comme une fonction $f(G_1,G_2)$ qui calcule une valeur scalaire de similarité.
 
 Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre une telle fonction de similarité sur la base d'exemples de paires similaires/différents.
 
