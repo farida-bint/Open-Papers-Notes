@@ -14,11 +14,11 @@ Une telle segmentation semantique, non-supervisée présente des avantages a sav
 
 Considérons la tâche de cartographie d'un corpus d'images (par exemple l'imagerie sous-marine, qui manquent souvent de grandes quantités de données étiquetées); en utilisant une approche de segmentation sémantique non supervisée.
 
-Pour un jeu de données non labelisé dans un domaine $**D**$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
+Pour un jeu de données non labelisé dans un domaine $D$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
 
 ## Background
 
-Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif. En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classification ou de segmentation.
+Cet article tire son inspiration au travers du succes des travaux antérieurs basés sur un apprentissage auto-supervisé de features, a l'instar de l'apprentissage contrastif (ou de comparaison, qui neccéssite des examples négatifs pour fonctionner). En effet, ces différentes méthodes apprenent les features globaux d'un jeu de données sans l'utilisation de labels, en entrainant un modele a reconnaitre les paires de pixels similaires et différentes, afin d'apprendre des caractéristiques de haut niveau sur les données, et ceci avant d'effectuer une tâche de classification ou de segmentation.
 
 Plus précisément, nous avons une image et nous l'augmentons de différentes manières. Ensuite, nous présentons ces deux images au modèle qui apprend deux copies du même réseau (poids partagés), et nous laissons le modèle décider ce qui suit : en regardant ces deux entrées, elles peuvent sembler différentes mais elles sont en fait les mêmes (elles proviennent de la même image). Nous pouvons donc voir comment cet objectif peut nous donner une sorte de représentation parce que le modèle apprend les correspondances entre les caractéristiques à partir d'entrées similaires (quel genre de contenu est susceptible d'être présent sur la même image).
 
@@ -29,19 +29,23 @@ La méthode de l'article présenté dans ces notes, **STEGO**, consiste à préd
 
 ## Method Overview
 
-STEGO apprend les représentations de features en maximisant l'alignement des éléments similaires via une perte contrastive dans l'espace latent. De facon analogique a l'architecture classique d'un CNN, the entire process of l'architecture du modele can be described concisely in three baselines steps:
+STEGO apprend les représentations de features en maximisant l'alignement des éléments similaires via une perte contrastive dans l'espace latent. L'objectif etant que le modele produise des représentations similaires pour des images similaires. 
+
+De facon analogique a l'architecture classique d'un CNN, the entire process of l'architecture du modele can be described concisely in three baselines steps:
 
 > Extraction de caractéristiques (encodage)
 
-En utilisant un modele pré-entrainé, DINO dans ce cas, l'objectif de cette étape est d'obtenir les descripteurs sémantiques pour une image en entrée
+En utilisant un modele pré-entrainé, DINO dans ce cas, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
 
-Soit pour une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o[p]$ la représentation du pixel $p de x$.
+Soit une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
 > Classification (segmentation)
 
+
+
 > Minimisation de la perte
 
-Avec un modele deja pré-entrainé, DINO dans ce cas, l'objectif de cet article est d'obtenir une nouvelle représentation qui distille la connaissance apprise de DINO tout en adaptant la fonction d'erreur. La méthode de distillation des caractéristiques proposée utilise donc les sorties de DINO comme signal de supervision. En effet, STEGO recoit les sorties de DINO comme entrée pour la téte de segmentation qui n'est autre qu'un reseau de projection des représentations d'un espace vectoriel vers un espace d'encodage.
+Avec un modele deja pré-entrainé, **DINO** dans ce cas, l'objectif de cet article est d'obtenir une nouvelle représentation qui distille la connaissance apprise de DINO tout en adaptant la fonction d'erreur. La méthode de distillation des caractéristiques proposée utilise donc les sorties de DINO comme signal de supervision. En effet, STEGO recoit les sorties de **DINO** comme entrée pour la téte de segmentation qui n'est autre qu'un reseau de projection des représentations d'un espace vectoriel vers un espace d'encodage.
 
 >Training process
 
