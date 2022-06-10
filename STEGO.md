@@ -68,10 +68,12 @@ Cependant, au lieu de classer $z_i$ a $h_i'$, nous voudrions prédire si une pai
 En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient a :
 
 1. extraire les pseudo-labels des 2 images, qui doivent être également similaires, on calcule donc la matrice de correlation entre les 2 vecteurs de caractéristiques pour identifier les correspondances entre les 2.
+ 
 2. Effectuer la classification (regrouper les pixels proches pour former les classes d'objets) sur les 2 vecteurs de caractéristiques. Les cartes de segmentations doivent être également similaires, on calcule aussi la matrice de correlation entre les 2 cartes
+ 
 3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existent une correlation entre des points de données de leurs pseudo-labels évoluant de la même facon. C'est a dire que s'il existe des paires de points de données des pseudo-labels qui lorsqu'ils sont proches produisent une des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
-Le module de perte 
+Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient a calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis a jour). Le fonction d'erreur vise donc a minimiser cette distance de facon a maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactifications).
 
 ## Takeaways
 
