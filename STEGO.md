@@ -35,11 +35,20 @@ De facon analogique a l'architecture classique d'un CNN, the entire process of l
 
 > Extraction de caractéristiques (encodage)
 
-En utilisant un modele pré-entrainé, DINO dans ce cas, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
+En utilisant un modele pré-entrainé, DINO dans ce cas, que nous pouvons considérer comme une simple focntion $h = f_o$, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
 > Classification (segmentation)
+
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de projection, $z = g(h)$ pour transformer les données dans un autre espace. Les auteurs ont montré que cette étape améliorent les performances du modele.
+
+En projetant les images dans une représentation spatiale latente, le modele est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
+
+Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur les features maps (fonction de correspondance paramétrique)
+
+Pour bien comprendre cette fonction, enoncons le probleme a resoudre ici.
+
 
 
 
