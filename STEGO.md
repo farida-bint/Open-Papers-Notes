@@ -45,10 +45,12 @@ Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé 
 
 En projetant les images dans une représentation spatiale latente, le modele est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur les features maps (fonction de correspondance paramétrique)
+Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur les features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
 Pour bien comprendre cette fonction, enoncons le probleme a resoudre ici.
 
+Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ produisent des cartes de segmentations comme suit:
+> 
 
 
 
