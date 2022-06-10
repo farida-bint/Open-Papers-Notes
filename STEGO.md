@@ -29,9 +29,9 @@ La méthode de l'article présenté dans ces notes, **STEGO**, consiste à préd
 
 ## Method Overview
 
-STEGO apprend les représentations de features en maximisant l'alignement des éléments similaires via une perte contrastive dans l'espace latent. L'objectif etant que le modele produise des représentations similaires pour des images similaires. 
+STEGO apprend les représentations de features en maximisant l'alignement des objets identifiés via une perte contrastive dans l'espace latent. L'objectif etant que le modele produise des représentations similaires pour des images similaires. 
 
-De facon analogique a l'architecture classique d'un CNN, the entire process of l'architecture du modele can be described concisely in three baselines steps:
+De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modele peut être décrit en 3 étapes formant la partie baseline :
 
 > Extraction de caractéristiques (encodage)
 
@@ -74,6 +74,10 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
 3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existent une correlation entre des points de données de leurs pseudo-labels évoluant de la même facon. C'est a dire que s'il existe des paires de points de données des pseudo-labels qui lorsqu'ils sont proches produisent une des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
 Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient a calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis a jour). Le fonction d'erreur vise donc a minimiser cette distance de facon a maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactifications).
+
+> Introduction des biais
+
+Par additionau processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux certaines observations présentées dans l'article, et que nous élaborerons ultérieurement.
 
 ## Takeaways
 
