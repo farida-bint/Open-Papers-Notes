@@ -49,23 +49,29 @@ Par conséquent pour la formation des clusters apres extraction des caractérist
 
 Pour bien comprendre cette fonction, enoncons le probleme a resoudre ici.
 
-Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ produisent des cartes de segmentations comme suit:
-> 
+Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des cartes de segmentations comme suit:
 
-
+- si deux points de données sont similaires avant la transformation, ils doivent être plus proches apres la transformation, c'est a dire que la distance entre doit être petite (*small*)
+- 
+- si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est a dire que la distance entre les deux doit être grande (*large*)
 
 > Minimisation de la perte
 
-Avec un modele deja pré-entrainé, **DINO** dans ce cas, l'objectif de cet article est d'obtenir une nouvelle représentation qui distille la connaissance apprise de DINO tout en adaptant la fonction d'erreur. La méthode de distillation des caractéristiques proposée utilise donc les sorties de DINO comme signal de supervision. En effet, STEGO recoit les sorties de **DINO** comme entrée pour la téte de segmentation qui n'est autre qu'un reseau de projection des représentations d'un espace vectoriel vers un espace d'encodage.
+Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les cartes de segmentations $z$ produites (niveau des caractéristiques : haut).
 
->Training process
+Puisque nous comparons deux vecteurs, un choix naturel est le cosinus de similarité.
 
-DINO create intermediate embeddings that are learned from the data. These embeddings are based on the dataset itself, with similar images having similar embeddings, and vice versa. They are then attached to the rest of the model, which uses those embeddings as information and effectively learns and makes predictions properly. These embeddings, ideally, should contain as much information and insight about the data as possible, so that the model can make better predictions. However, a common problem that arises is that the model creates embeddings that are redundant. For example, if two images are similar, the model will create embeddings that are just a string of 1's, or some other value that contains repeating bits of information. This is no better than a one-hot encoding or just having one bit as the model’s representations; it defeats the purpose of the embeddings, as they do not learn as much about the dataset as possible. For other approaches, the solution to the problem was to carefully configure the model such that it tries not to be redundant.
+Pour calculer la perte du modele, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'a l'etape 1, les features maps produites sont considérés comme des pseudo-labels. 
 
+Cependant, au lieu de classer $z_i$ a $h_i'$, nous voudrions prédire si une paire ($z_i$, $h_i'$) correspond ou pas. En d'autres mots, trouver si pour tout element de z prédit, il y a compatibilité avec un élément de h.
 
+En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient a :
 
+1. extraire les pseudo-labels des 2 images, qui doivent être également similaires, on calcule donc la matrice de correlation entre les 2 vecteurs de caractéristiques pour identifier les correspondances entre les 2.
+2. Effectuer la classification (regrouper les pixels proches pour former les classes d'objets) sur les 2 vecteurs de caractéristiques. Les cartes de segmentations doivent être également similaires, on calcule aussi la matrice de correlation entre les 2 cartes
+3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existent une correlation de pseudo-labels 
 
-
+Le module de perte 
 
 ## Takeaways
 
