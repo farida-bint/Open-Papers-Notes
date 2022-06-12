@@ -33,13 +33,13 @@ STEGO apprend les représentations de features en maximisant l'alignement des ob
 
 De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
 
-> Extraction de caractéristiques (encodage)
+> Sélection des features / Extraction de caractéristiques
 
 En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer comme une simple focntion $h = f_o$, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
-> Classification (segmentation)
+> Clustering / Classification
 
 Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de projection, $z = g(h)$ pour transformer les données dans un autre espace. Les auteurs ont montré que cette étape améliore les performances du modèle.
 
