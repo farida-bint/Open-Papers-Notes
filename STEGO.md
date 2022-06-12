@@ -92,14 +92,15 @@ Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre 
 
 Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Mais notons que une fonction de distance c'est juste le contraire d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
 
+This process describe the steps that STEGO does after the segmentation head yield heatmap or activation for segmentation
 
-Specifically, for an unlabeled image $x_i (i=1,... ,n)$, let $f_\theta(x)$ be the feature tensor obtained by $f_\theta$, $f_\theta(x)[p]$ be the feature representation corresponding to pixel $p$, and $g_w(\cdot)$ be the classifier that classifies each pixel, the following two processes are repeated baselines can be considered.
+Specifically, for an unlabeled image $x_i (i=1,... ,n)$, let $f_\theta(x)$ be the segmentation feature tensor obtained by $f_\theta$, $f_\theta(x)[p]$ be the feature representation corresponding to pixel $p$, and $g_w(\cdot)$ be the classifier that classifies each pixel, the following two processes are repeated baselines can be considered.
 
 1. clustering of each pixel of the image in the dataset using the current feature representation and k-means method (actually Mini Batch K-Means method).
 
 $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
-where $y_{ip}$ denotes the cluster label of the $p$th pixel of the $i$th image and $\mu_k$ denotes the center point (centroid) of the $k$th cluster.
+where $y_{ip}$ denotes the cluster label of the $p$ pixel of the $i$ image and $\mu_k$ denotes the center point (centroid) of the $k$ cluster.
 
 2. Based on the pseudo-labels obtained by clustering, we learn a pixel-by-pixel classifier using cross entropy loss.
 
