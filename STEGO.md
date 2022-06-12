@@ -92,23 +92,7 @@ Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre 
 
 Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Mais notons que une fonction de distance c'est juste le contraire d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
 
-This process describe the steps that STEGO does after the segmentation head yield heatmap or activation for segmentation
 
-Specifically, for two feature tensors $s, t$, let $S(f)$ and $S(g)$ be their segmentation feature tensors obtained by $S$, with $S(g)[p]$ be the feature representation corresponding to pixel $p$ of $g$, and $g_w(\cdot)$ be the classifier that classifies each pixel, the following two processes are repeated baselines can be considered.
-
-1. clustering of each pixel of the image in the dataset using the current feature representation and k-means method (actually Mini Batch K-Means method).
-
-$min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
-
-where $y_{ip}$ denotes the cluster label of the $p$ pixel of the $i$ image and $\mu_k$ denotes the center point (centroid) of the $k$ cluster.
-
-2. Based on the pseudo-labels obtained by clustering, we learn a pixel-by-pixel classifier using cross entropy loss.
-
-$min_{\theta,w}\sum_{i,p} L_{CE}(g_w(f_\theta(x_i)[p]),y_{ip})$
-
-$L_{CE}(g_w(f_\theta(x_i)[p]),y_{ip})=-log\frac{e^s_{y_{ip}}}{\sum_ke^{s_k}}$
-
-where $s_k$ is the score output corresponding to the $k$th class of the classifier $g_w(f_\theta(x_i,p))$. With these as a baseline, the proposed method, PiCIE, makes the modifications described below.
 
 ---
 ## Application to underwater imagry / Application à l'imagerie sous-marine
