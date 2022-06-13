@@ -55,7 +55,7 @@ Par conséquent pour la formation des clusters après extraction des caractéris
 
 Pour bien comprendre cette fonction, énoncons le problème à résoudre ici.
 
-Soient $f$ et $g$ les features maps associées aux images i et j (similaires), les transformations $S(f)$ et $S(g)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des vecteurs de segmentation comme suit:
+Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires), les transformations $S(f)$ et $S(g)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des vecteurs de segmentation comme suit:
 
 - si deux points de données sont similaires avant la transformation, ils doivent être plus proches après la transformation, c'est à dire que la distance entre eux doit être petite (*small*)
 
@@ -79,15 +79,17 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
  
 2. Calculer le degré/score de similarité des $2$ vecteurs de segmentation $s$ et $t$. La matrice de corrélation $S$, obtenue est considérée comme la valeur de prédiction du MLP. 
  
-3. La matrice $S$ donc comparer à la valeur étiquette $F$ pour évaluer le niveau de compatibilité 
+3. La matrice $S$ est donc comparer à la valeur étiquette $F$ pour évaluer leur niveau de compatibilité.
 
-- est-ce qu'il y a compatibilité entre les prédictions et les étiquettes ? Si non, alors le rapprochement qui a été effectué dans l'espace latent est à revoir et pour cela, mise à jour des poids du MLP.
+- Est-ce qu'il y a compatibilité entre les prédictions et les étiquettes ? Si non, alors le rapprochement qui a été effectué dans l'espace latent est à revoir et pour cela, mise à jour des poids du MLP.
 
-- nouveau regroupement des points de données des $2$ vecteurs $z$
+- Nouveaux regroupements des points de données des $2$ vecteurs $z$
 
-- production de la matrice de correspondance entre les vecteurs
+- Production de la matrice de correspondance entre les vecteurs
 
-- calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max)
+- Calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max :sunglasses:)
+
+  $\sum_{hwij} (F_hwij - b) * S_hwij$
 
 Pour deux vecteurs de segmentation jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
@@ -103,7 +105,7 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
 - En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
 
-$min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
+  $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
 où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
 
