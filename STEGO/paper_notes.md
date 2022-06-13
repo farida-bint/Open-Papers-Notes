@@ -33,17 +33,17 @@ STEGO apprend les représentations de features en maximisant l'alignement des mo
 
 De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
 
-> Sélection des features / Extraction de caractéristiques
+> **Sélection des features / Extraction de caractéristiques**
 
 La sélection des caractéristiques est le processus d'identification d'un sous-ensemble des caractéristiques les plus utiles qui produit des résultats compatibles avec l'ensemble des caractéristiques d'origine. Les caractéristiques fournissent des informations sur le jeu de données. Dans la représentation de données de haute dimension, chaque échantillon est décrit par de nombreuses caractéristiques. Les jeux de données ne sont généralement pas spécifiques à une tâche, de nombreuses caractéristiques sont non pertinentes ou redondantes et doivent être éliminées ou filtrées dans le but de classer les objets cibles. Étant donné un ensemble de caractéristiques, le problème de la sélection des caractéristiques consiste à trouver un sous-ensemble de caractéristiques qui "maximise la capacité d'un modèle à classifier des motifs". 
 
-1. Extraction
+**1. Extraction**
 
 En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer une simple fonction $h = f_o$ pour cette étape, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
-2. Réduction 
+**2. Réduction **
 
 Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
@@ -63,7 +63,7 @@ Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires
 
 Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique , nous obtiendrons une forte similarité lorsque l'angle est proche de 0, et une faible similarité sinon.
 
-> Minimisation de la perte
+> **Minimisation de la perte**
 
 Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits (ils partagent un grand nombre de motifs similaires).
 
@@ -75,7 +75,7 @@ Cependant, au lieu d'essayer de classer un $z_i$ à un $h_j$, nous voudrions pr�
 
 En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient à : vérifier si pour deux images similaires
 
-1. Calculer le degré/score de similarité des étiquettes des images en entrée. Les auteurs le font par le biais d'une matrice de corrélation $F$ entre les 2 feature maps $f$ et $g$, chaque score est sauvegardé comme label de similarité/**compatibilité** entre une paire d'éléments de $f$ et $g$.
+1. Calculer le degré/score de similarité des étiquettes des images en entrée. Les auteurs le font par le biais d'une matrice de corrélation $F$ entre les $2$ feature maps $f$ et $g$, chaque score est sauvegardé comme label de similarité/**compatibilité** entre une paire d'éléments de $f$ et $g$.
  
 2. Calculer le degré/score de similarité des $2$ vecteurs de segmentation $s$ et $t$. La matrice de corrélation $S$, obtenue est considérée comme la valeur de prédiction du MLP. 
  
@@ -104,7 +104,7 @@ Petite anecdote : pourquoi il y a moins (-) devant la fonction d'erreur ?
 
 Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux différentes observations présentées dans l'article, et que nous élaborerons ultérieurement.
 
-> Clustering / Classification
+> **Clustering / Classification**
 
 Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps **réduites** (ce que j'ai appelé les vecteurs de segmentation) pour extraire les clusters précédemment identifiés. 
 
@@ -114,7 +114,7 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
  
- > **Optimisation**
+ > **Optimisation** 
 
 De nombreuses méthodes de segmentation utilisent les **CRFs** comme méthode pour post-traiter les résultats de sortie finaux. L'idée est d'encourager les pixels qui ont de fortes relations spatiales et de caractéristiques à avoir la même étiquette. 
 
@@ -163,12 +163,12 @@ Pour revenir à la notion d'ontologie présenté dans l'idée générale de l'ar
 
 1. Animaux : crabe, anguille, étoile de mer, coquillage, poisson, calamar, requin, dauphin, corail, anémone de mer, etc... Pour aller plus loin on peut classer ce vocabulaire en deux groupes, celui des vertébrés et des invertébrés et ainsi établir les relations entre les éléments du vocabulaire et les groupes sous forme de ramifications.
 
-       animaux (aquatiques)
-            |
-         vertébré
-            |
-   poisson, requin, dauphin, etc...
-   
+            les animaux (aquatiques)
+                     |
+              les vertébrés
+               /     |    \         
+         poisson, requin, dauphin, etc...
+
 2. plantes : algue, herbier marin, etc...
 
 3. Les dechets : le materiel de pêche, le plastiques, papier, caoutchouc, bois, etc...
