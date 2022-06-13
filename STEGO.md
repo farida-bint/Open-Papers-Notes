@@ -49,16 +49,6 @@ Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé 
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-> Clustering / Classification
-
-Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps réduites 
-
-- En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
-
-$min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
-
-où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
-
 Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
 Pour bien comprendre cette fonction, énoncons le problème a résoudre ici.
@@ -92,6 +82,16 @@ Pour résumé, en fonction du résultat de correspondance entre les vecteurs de 
 > Introduction des biais
 
 Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introduisent plusieurs biais, ce qui entraine une modification de la fonction d'erreur pour s'adapter aux différentes observations présentées dans l'article, et que nous élaborerons ultérieurement.
+
+> Clustering / Classification
+
+Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps réduites 
+
+- En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
+
+$min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
+
+où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
 
 ---
 ## Takeaways / Résumé
