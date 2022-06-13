@@ -97,8 +97,9 @@ Pour résumé, en fonction du résultat de correspondance entre les vecteurs de 
 
 La fonction d'erreur vise donc à **minimiser** cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (le rapprochement entre les points de données au niveau du MLP produit des groupes donc des clusters).
 
-Petite anecdote : pourquoi il y a moins (-) devant la fonction d'erreur ?
-   A toutefois qu'il y a un problème de **maximisation**, il s'agit en réalité d'une minimisation de **l'opposé** d'une fonction de coût. :sunglasses:
+**Petite anecdote :** pourquoi il y a moins (-) devant la fonction d'erreur ?
+
+A toutefois qu'il y a un problème de **maximisation**, il s'agit en réalité d'une minimisation de **l'opposé** d'une fonction de coût. :sunglasses:
 
 > Introduction des biais
 
