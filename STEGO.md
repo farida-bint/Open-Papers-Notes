@@ -14,7 +14,7 @@ Une telle segmentation sémantique, non-supervisée présente des avantages a sa
 
 Considérons la tâche de cartographie d'un corpus d'images, en utilisant une approche de segmentation sémantique non supervisée.
 
-Pour un jeu de données non labelisé dans un domaine $D$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
+Pour un jeu de données non-étiqueté dans un domaine $D$, la tâche sous la main a pour objectif de, determiner un ensemble de classes visibles **$C$** dans une image et d'apprendre une fonction **$f$** qui va attribuer une de ces classes a chaque pixel de l'image prise dans **$D$.**
 
 ## Background / Travaux Connexes
 
@@ -35,11 +35,17 @@ De facon analogique a l'architecture classique d'un CNN, le processus entier de 
 
 > Sélection des features / Extraction de caractéristiques
 
-En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer comme une simple focntion $h = f_o$, cette étape vise a obtenir les descripteurs sémantiques pour une paire d'images en entrée.
+La sélection des caractéristiques est le processus d'identification d'un sous-ensemble des caractéristiques les plus utiles qui produit des résultats compatibles avec l'ensemble des caractéristiques d'origine. Les caractéristiques fournissent des informations sur le jeu de données. Dans la représentation de données de haute dimension, chaque échantillon est décrit par de nombreuses caractéristiques. Les jeux de données ne sont généralement pas spécifiques à une tâche, de nombreuses caractéristiques sont non pertinentes ou redondantes et doivent être éliminées ou filtrées dans le but de classer les objets cibles. Étant donné un ensemble de caractéristiques, le problème de la sélection des caractéristiques consiste à trouver un sous-ensemble de caractéristiques qui "maximise la capacité d'un modèle à classifier des motifs". 
 
-Soit une image non étiquétée $x_i(i=1,...,n)$, l'encodeur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
+1. Extraction
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de projection, $z = g(h)$ pour transformer les données dans un autre espace. Les auteurs ont montré que cette étape améliore les performances du modèle.
+En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer une simple fonction $h = f_o$ pour cette étape, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
+
+Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
+
+2. Réduction 
+
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de segmentation, $z = g(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
