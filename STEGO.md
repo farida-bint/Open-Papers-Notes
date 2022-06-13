@@ -93,7 +93,6 @@ Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre 
 Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Mais notons que une fonction de distance c'est juste le contraire d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
 
 
-
 ---
 ## Application to underwater imagry / Application à l'imagerie sous-marine
 
@@ -105,7 +104,9 @@ Dans ce qui suit, nous utiliserons parfois le terme **distance** et dirons que l
 
 L’utilisation d’images sous-marines est difficile car l’eau introduit d’importantes contraintes. En effet, la qualité des images est fortement dégradée par les effets variables qu’introduit l’eau sur la propagation des signaux. Les principales causes de cette dégradation sont dues à la présence de particules en suspension (sable, plancton, algues, etc...), aux problèmes d’éclairage ainsi qu’à l’absorption de l’énergie lumineuse. De plus, la distorsion des couleurs et les effets de flou changent au fil des saisons. Dans cette situation, le modèle de vision formé avec des images brutes peut ne pas être performant. Par conséquent, il faut envisager un processus d'amélioration (pré-traitement) de l'image pour normaliser toutes les images dans une vue claire. 
 
-##About the project / A propos du projet
+---
+
+## About the project / A propos du projet
 
 > Questions
 
