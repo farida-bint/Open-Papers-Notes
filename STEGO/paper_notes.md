@@ -153,4 +153,12 @@ L’utilisation d’images sous-marines est difficile car l’eau introduit d’
 
 Pour revenir à la notion d'ontologie présenté dans l'idée générale de l'article, des exemples d'ontologies pour le cas de la cartographie sous-marine pourraient être :
 
-1. 
+1. Animaux : crabe, anguille, étoile de mer, coquillage, poisson, calamar, requin, dauphin, corail, anémone de mer, etc... Pour aller plus loin on peut classer ce vocabulaire en deux groupes, celui des vertébrés et des invertébrés et ainsi établir les relations entre les éléments du vocabulaire et les groupes sous forme de ramifications.
+
+       animaux (aquatiques)
+            |
+         vertébré
+            |
+   poisson, requin, dauphin, etc...
+   
+   2. plantes : algue, herbier marin, 
