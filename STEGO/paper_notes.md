@@ -43,7 +43,7 @@ Pour la sélection des features, **STEGO** utilise un modèle pré-entrainé, **
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
-**2. Réduction **
+**2. Réduction**
 
 Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse :slightly_smiling_face: ). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
