@@ -106,13 +106,17 @@ Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introdu
 
 > Clustering / Classification
 
-Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps **réduites** (ce que j'ai appelé les vecteurs de segmentation). 
+Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps **réduites** (ce que j'ai appelé les vecteurs de segmentation) pour extraire les clusters précédemment identifiés. 
 
 - En effet il y a classification (assignation à un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation courante des caractéristiques (segmentation features) et la méthode **K-Means** (la méthode utilisée dans l'article est celle du **Mini Batch K-Means**).
 
   $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
+ 
+ > Optimisation
+
+De nombreuses méthodes de segmentation utilisent les CRF comme méthode pour post-traiter les résultats de sortie finaux. L'idée est d'encourager les pixels qui ont de fortes relations spatiales et de caractéristiques à avoir la même étiquette. Les auteurs utilise donc un CRF à la fin du process pour 
 
 ---
 ## Takeaways / Résumé
