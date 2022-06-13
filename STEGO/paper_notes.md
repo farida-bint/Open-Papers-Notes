@@ -77,9 +77,19 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
 
 1. Calculer le degré/score de similarité des étiquettes des images en entrée. Les auteurs le font par le biais d'une matrice de corrélation $F$ entre les 2 feature maps $f$ et $g$, chaque score est sauvegardé comme label de similarité/**compatibilité** entre une paire d'éléments de $f$ et $g$.
  
-2. Calculer le degré/score de similarité des $2$ vecteurs de segmentation $s$ et $t$. La matrice de corrélation $S$, obtenue est considérée comme la valeur de prédiction du MLP, qui sera donc comparer à la valeur étiquette $F$ pour évaluer le niveau de compatibilité (entre les prédictions et les étiquettes).
+2. Calculer le degré/score de similarité des $2$ vecteurs de segmentation $s$ et $t$. La matrice de corrélation $S$, obtenue est considérée comme la valeur de prédiction du MLP. 
  
-3. Pour deux cartes de segmentations jugées similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
+3. La matrice $S$ donc comparer à la valeur étiquette $F$ pour évaluer le niveau de compatibilité 
+
+- est-ce qu'il y a compatibilité entre les prédictions et les étiquettes ? Si non, alors le rapprochement qui a été effectué dans l'espace latent est à revoir et pour cela, mise à jour des poids du MLP.
+
+- nouveau regroupement des points de données des $2$ vecteurs $z$
+
+- production de la matrice de correspondance entre les vecteurs
+
+- calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max)
+
+Pour deux vecteurs de segmentation jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
 Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis à jour). Le fonction d'erreur vise donc a minimiser cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactification).
 
