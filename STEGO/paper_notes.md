@@ -61,7 +61,7 @@ Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires
 
 - si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
-Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique , nous obtiendrons une forte similarité lorsque l'angle est proche de 0, et une faible similarité sinon.
+Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique , nous obtiendrons une forte similarité lorsque l'angle est proche de $0$, et une faible similarité sinon.
 
 > **Minimisation de la perte**
 
@@ -137,9 +137,8 @@ Nous pouvons également utiliser le terme **distance** et dire que le modèle ap
 
 > **STEGO Architecture in one Paragraph / Architecture de STEGO en un paragraph**
 
-Le modèle présenté dans l'article suit trois étapes principales. Tout d'abord, les features (f) sont extraites à l'aide d'un réseau pré-entrainé à savoir **DINO**. Ensuite, un **MLP** utilise ces features (f) pour produire des représentations réduites et une matrice de correspondance $S$ qui calcule les degrés de similarité entre les représentations réduites point par point. À partir des mêmes features maps (f), une matrice de correspondance $F$ déduit des scores de compatibilité par paires entre les pixels. Enfin, la matrice $F$ est utilisée comme **signal de supervision** pour le calcul de l'erreur du **MLP** contre la matrice $S$. Ce qui permet au modèle d'avoir des représentations alignées avec les étiquettes auxilliaires (f). Ensuite, l'algorithme de K-Means va extraire les clusters identifiables des représentations alignées formant dès lors les masques de segmentation recherchés. Pour produire un masque de segmentation final,  le **CRF** utilisé encourage les pixels voisins à avoir des probabilités similaires en fonction de leurs similitudes sémantiques. De ce fait, les segmentations prédites sont amenées à prendre la forme des objets d'intérêt.
+Le modèle présenté dans l'article suit trois étapes principales. Tout d'abord, les features (f) sont extraites à l'aide d'un réseau pré-entrainé à savoir **DINO**. Ensuite, un **MLP** utilise ces features (f) pour produire des représentations réduites et une matrice de correspondance $S$ qui calcule les degrés de similarité entre ces représentations point par point. À partir des mêmes features maps (f), une matrice de correspondance $F$ déduit des scores de compatibilité par paires entre les pixels. Plus tard, la matrice $F$ est utilisée comme **signal de supervision** pour le calcul de l'erreur du **MLP** contre la matrice $S$ par une simple multiplication des éléments de chaque matrice. Ce qui permet au modèle d'avoir des représentations alignées avec les étiquettes auxilliaires (f). Ensuite, le modèle utilise l'algorithme K-Means, pour extraire les clusters identifiables des représentations alignées, formant dès lors les masques de segmentation recherchés. Cherchant à optimiser le modèle, pour la production des masques de segmentation finaux,  les auteurs utilisent un **CRF** qui va encourager les pixels voisins à avoir des probabilités similaires en fonction de leurs similitudes sémantiques. De ce fait, les segmentations prédites sont amenées à prendre la forme des objets d'intérêt.
 
-scores de classe pixel par pixel
 ---
 ## Application to underwater imagry / Application à l'imagerie sous-marine
 
