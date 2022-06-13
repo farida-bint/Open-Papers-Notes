@@ -114,16 +114,20 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
  
- > Optimisation
+ > **Optimisation**
 
-De nombreuses méthodes de segmentation utilisent les CRF comme méthode pour post-traiter les résultats de sortie finaux. L'idée est d'encourager les pixels qui ont de fortes relations spatiales et de caractéristiques à avoir la même étiquette. Les auteurs utilise donc un CRF à la fin du process pour 
+De nombreuses méthodes de segmentation utilisent les **CRFs** comme méthode pour post-traiter les résultats de sortie finaux. L'idée est d'encourager les pixels qui ont de fortes relations spatiales et de caractéristiques à avoir la même étiquette. 
+
+Le résultat du clustering conduit certe à une formation de cluster clairement visible, néamoins, on peut remarquer que, les des extrêmités des objets identifiés sont rugueux et présentent parfois des discontinuités. Les auteurs utilise donc un CRF à la fin du process pour intégrer la structure des objets. Ce CRF en effet, va tenir compte de la correlation entre les pixels d'un même objet contrairement aux étapes précédentes qui s'attardent sur la relation entre les classes. 
+
+Ce raffinement adapte donc la sortie pour tenir compte des delimitations sémantiques des objets, conduisant à une meilleure segmentation.
 
 ---
 ## Takeaways / Résumé
 
 Ici nous présentons ce que nous retenons de l'article et améliorons les explications plus haut
 
-> Feature Similarity Learning / Apprentissage des correspondances entre les caractéristiques
+> **Feature Similarity Learning / Apprentissage des correspondances entre les caractéristiques**
 
 L'objectif principal est d'apprendre une fonction de similarité entre les descripteurs de caractéristiques. Étant donné deux représentations $G_1$,$G_2$ , un modèle de similarité de représentations peut être écrit comme une fonction $f(G_1,G_2)$ qui calcule une valeur scalaire de similarité.
 
@@ -147,13 +151,13 @@ L’utilisation d’images sous-marines est difficile car l’eau introduit d’
 
 ## About the project / A propos du projet
 
-> Questions
+> **Questions / Questions**
 
 1. Ce projet se focalise sur la tâche de segmentation de quels types objets ? Les objets d'intérêt représentant les classes à assigner, exemple : animaux, plantes, plastique, capteurs, etc
 
 2. Quelle est l'application directe ou indirecte de ce projet ? Exemple : système automatique de nettoyage des dechets marins, dont la base est de comprendre les différents objets présents dans l'eau.
 
-> En savoir plus / More
+> **En savoir plus / More**
 
 Pour revenir à la notion d'ontologie présenté dans l'idée générale de l'article, des exemples d'ontologies pour le cas de la cartographie sous-marine pourraient être :
 
