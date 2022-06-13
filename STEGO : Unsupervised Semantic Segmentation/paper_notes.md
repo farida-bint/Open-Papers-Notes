@@ -51,6 +51,8 @@ En projetant les images dans une représentation spatiale latente, le modèle es
 
 Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
+![This is an image](Images/STEGO.draw.io.png)
+
 Pour bien comprendre cette fonction, énoncons le problème a résoudre ici.
 
 Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des cartes de segmentations comme suit:
