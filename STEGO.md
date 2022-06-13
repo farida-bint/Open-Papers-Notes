@@ -110,6 +110,6 @@ L’utilisation d’images sous-marines est difficile car l’eau introduit d’
 
 > Questions
 
-1. Ce projet se focalise sur la tâche de segmentation de quels objets d'intérêt ? Les objets d'intérêt représentant les classes à assigner, exemple : animaux, plantes, plastique, capteurs, etc
+1. Ce projet se focalise sur la tâche de segmentation de quels types objets ? Les objets d'intérêt représentant les classes à assigner, exemple : animaux, plantes, plastique, capteurs, etc
 
 2. Quelle est l'application directe ou indirecte de ce projet ? Exemple : système automatique de nettoyage des dechets marins, dont la base est de comprendre les différents objets présents dans l'eau.
