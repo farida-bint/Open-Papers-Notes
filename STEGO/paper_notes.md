@@ -10,7 +10,7 @@ L'apprentissage non-supervisé / auto-supervisé (self-supervised learning) vise
 
 Une telle segmentation sémantique, non-supervisée présente des avantages a savoir, la réduction du coût de l'annotation et la découverte de classes qui ne pouvait être identifiées par l'homme.
 
-## Problem Statement / Probleme de recherche
+## Problem Statement / Problème de recherche
 
 Considérons la tâche de cartographie d'un corpus d'images, en utilisant une approche de segmentation sémantique non supervisée.
 
@@ -31,7 +31,7 @@ La méthode de l'article présenté dans ces notes, **STEGO**, permet de segment
 
 **STEGO** apprend les représentations de features en maximisant l'alignement des motifs via une perte contrastive dans l'espace latent. L'objectif étant que le modèle produise des représentations similaires pour des images similaires. 
 
-De façon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
+De façon analogique à l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
 
 > **Sélection des features / Extraction de caractéristiques**
 
@@ -39,21 +39,25 @@ La sélection des caractéristiques est le processus d'identification d'un sous-
 
 **1. Extraction**
 
-Pour la sélection des features, **STEGO** utilise un modèle pré-entrainé, **DINO** qui est basé sur des mécanismes d'attention (au travers d'un transfor,ateur visuel). Nous pouvons considérer cette étape comme, une simple fonction $h = f_o$, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
+Pour la sélection des features, **STEGO** utilise un modèle pré-entrainé, **DINO** qui est basé sur des mécanismes d'attention (au travers d'un transformateur visuel - ViT). Nous pouvons considérer cette étape comme, une simple fonction $h = f_o$, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
 
-Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
+Soit une image non étiquétée $x$, l'extracteur $f_o$ fournit une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
 **2. Réduction**
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse :slightly_smiling_face: ). Les auteurs ont montré que cette étape améliore les performances du modèle.
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un **MLP** (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-Par conséquent pour la formation des clusters, après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
+Par conséquent pour une meilleure formation des clusters, après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps. En effet, une grande dimensionnalité peut signifier des centaines, des milliers, voire des millions de features (ce qui entraine généralement le ralentissement de la convergence d'un algo de clustering). La fonction $z$ a pour but donc, de réduire la dimensionalité des feature maps, c'est à dire :
+
+- Projetez tous les points de données dans un sous-espace de dimension inférieure
+- Regroupez ces points dans ce sous-espace en utilisant un algorithme au choix (dans le cas de l'article il s'agit d'une fonction de similarité)
+- Au final $z$ crée une représentation de faible dimension des feature maps, tout en préservant au mieux la structure ou les relations les plus apparentes dans les données. 
 
 ![This is an image](images/STEGO_archi.png)
 
-Pour bien comprendre cette fonction, énoncons le problème à résoudre ici.
+Pour bien comprendre la fonction $z$, énoncons le problème à résoudre ici.
 
 Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires), les transformations $S(f)$ et $S(g)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des vecteurs de segmentation comme suit:
 
@@ -61,25 +65,23 @@ Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires
 
 - si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
-Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique, nous obtiendrons une forte similarité lorsque l'angle est proche de $0$, et une faible similarité sinon.
+Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique, nous obtiendrons une forte similarité lorsque l'angle est proche de $0$, et une faible similarité sinon.
 
 > **Minimisation de la perte**
 
-Maintenant que nous avons nos deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits (ils partagent un grand nombre de motifs similaires).
-
-Puisque nous comparons deux vecteurs, le choix naturel des auteurs est le cosinus de similarité (comme expliqué plus haut).
+Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits (ils partagent un grand nombre de motifs similaires). Puisque nous comparons deux vecteurs, le choix naturel des auteurs est le cosinus de similarité (comme expliqué plus haut).
 
 Pour calculer la perte du **MLP**, continuons l'analogie avec les **CNNs**, dans le cas d'un **CNN**, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites (étant d'assez bonne qualité que des images étiquettes) peuvent être considérées comme des pseudo-labels. 
 
 Cependant, au lieu d'essayer de classer un $z_i$ à un $h_j$, nous voudrions prédire si une paire ($z_i$, $h_j$) correspond ou pas. En d'autres mots, trouver si pour tout élément de z prédit, il y a **compatibilité** avec un élément de h.
 
-En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient à : vérifier si pour deux images similaires
+En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient à :
 
 1. Calculer le degré/score de similarité des étiquettes des images en entrée. Les auteurs le font par le biais d'une matrice de corrélation $F$ entre les $2$ feature maps $f$ et $g$, chaque score est sauvegardé comme label de similarité/**compatibilité** entre une paire d'éléments de $f$ et $g$.
  
 2. Calculer le degré/score de similarité des $2$ vecteurs de segmentation $s$ et $t$. La matrice de corrélation $S$, obtenue est considérée comme la valeur de prédiction du MLP. 
  
-3. La matrice $S$ est donc comparer à la valeur étiquette $F$ pour évaluer leur niveau de compatibilité.
+3. La matrice $S$ est donc comparer à la matrice étiquette $F$ pour évaluer leur niveau de compatibilité.
 
 - Est-ce qu'il y a compatibilité entre les prédictions et les étiquettes ? Si non, alors le rapprochement qui a été effectué dans l'espace latent est à revoir et pour cela, mise à jour des poids du MLP.
 
@@ -134,45 +136,15 @@ L'objectif principal est d'apprendre une fonction de similarité entre les descr
 
 Dans cet article, les auteurs construisent donc un modèle (MLP) pour apprendre une telle fonction de similarité sur la base d'exemples de paires similaires/différents.
 
-Nous pouvons également utiliser le terme **distance** et dire que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Notons tout de même que, une fonction de distance c'est juste le contraire d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
+Nous pouvons également utiliser le terme **distance** et dire que le modèle apprend une **fonction de distance**  $d(G_1,G_2)$ entre les représentations (intermédiaires). Notons tout de même que, une fonction de distance est l'opposé d'une fonction de similarité, et nous pouvons simplement dire $f(G_1,G_2) = − d(G_1,G_2)$.
 
-> **STEGO Architecture in one Paragraph / Architecture de STEGO en un paragraph**
+> **STEGO Architecture in one Paragraph / Architecture de STEGO en un paragraphe**
 
-Le modèle présenté dans l'article suit trois étapes principales. Tout d'abord, les features (f) sont extraites à l'aide d'un réseau pré-entrainé à savoir **DINO**. Ensuite, un **MLP** utilise ces features (f) pour produire des représentations réduites et une matrice de correspondance $S$ qui calcule les degrés de similarité entre ces représentations point par point. À partir des mêmes features maps (f), une matrice de correspondance $F$ déduit des scores de compatibilité par paires entre les pixels. Plus tard, la matrice $F$ est utilisée comme **signal de supervision** pour le calcul de l'erreur du **MLP** contre la matrice $S$ par une simple multiplication des éléments de chaque matrice. Ce qui permet au modèle d'avoir des représentations alignées avec les étiquettes auxilliaires (f). Ensuite, le modèle utilise l'algorithme K-Means, pour extraire les clusters identifiables des représentations alignées, formant dès lors les masques de segmentation recherchés. Cherchant à optimiser le modèle, pour la production des masques de segmentation finaux,  les auteurs utilisent un **CRF** qui va encourager les pixels voisins à avoir des probabilités similaires en fonction de leurs similitudes sémantiques. De ce fait, les segmentations prédites sont amenées à prendre la forme des objets d'intérêt.
+Le modèle présenté dans l'article suit trois étapes principales. Tout d'abord, les features (f) sont extraites à l'aide d'un réseau pré-entrainé à savoir **DINO**. Ensuite, un **MLP** utilise ces features (f) pour produire des représentations réduites et une matrice de correspondance $S$ qui calcule les degrés de similarité entre ces représentations point par point. À partir des mêmes features maps (f), une matrice de correspondance $F$ est déduite des scores de compatibilité par paires entre les pixels. Plus tard, la matrice $F$ est utilisée comme **signal de supervision** pour le calcul de l'erreur du **MLP** contre la matrice $S$ par une simple multiplication des éléments de chaque matrice. Ce qui permet au modèle d'avoir des représentations alignées avec les étiquettes auxilliaires (f). Ensuite, le modèle utilise l'algorithme K-Means, pour extraire les clusters identifiables des représentations alignées, formant dès lors les masques de segmentation recherchés. Cherchant à optimiser le modèle, pour la production des masques de segmentation finaux,  les auteurs utilisent un **CRF** qui va encourager les pixels voisins à avoir des probabilités similaires en fonction de leurs similitudes sémantiques. De ce fait, les segmentations prédites sont amenées à prendre la forme des objets d'intérêt.
 
 ---
-## Application to underwater imagry / Application à l'imagerie sous-marine
+## Application to underwater imagery / Application à l'imagerie sous-marine
 
 ### Caractéristiques des données / Data Characteristics
 
-À la différence des images naturelles terrestres, les images sous-marines se caractérisent par une forte dominance de couleurs bleutées et verdâtres. Par ailleurs, la forte atténuation de la lumière dans l’eau par rapport à l’air et une plus forte diffusion de la lumière incidente ont pour conséquence de réduire considérablement la visibilité. Ainsi, des objets se trouvant à une distance lointaine du système d’acquisition ou de l’observateur mais aussi à une distances moyenne, voire même relativement courte dans certains cas, sont difficilement visibles et faiblement contrastés par rapport à leur environnement.
-
-### Challenges / Défis
-
-L’utilisation d’images sous-marines est difficile car l’eau introduit d’importantes contraintes. En effet, la qualité des images est fortement dégradée par les effets variables qu’introduit l’eau sur la propagation des signaux. Les principales causes de cette dégradation sont dues à la présence de particules en suspension (sable, plancton, algues, etc...), aux problèmes d’éclairage ainsi qu’à l’absorption de l’énergie lumineuse. De plus, la distorsion des couleurs et les effets de flou changent au fil des saisons. Dans cette situation, le modèle de vision formé avec des images brutes peut ne pas être performant. Par conséquent, il faut envisager un processus d'amélioration (pré-traitement) de l'image pour normaliser toutes les images dans une vue claire. 
-
----
-
-## About the project / A propos du projet :robot:
-
-> **Questions / Questions**
-
-1. Ce projet se focalise sur la tâche de segmentation de quels types objets ? Les objets d'intérêt représentant les classes à assigner, exemple : animaux, plantes, plastique, capteurs, etc
-
-2. Quelle est l'application directe ou indirecte de ce projet ? Exemple : système automatique de nettoyage des dechets marins, dont la base est naturellement de comprendre les différents objets présents dans l'eau.
-
-> **En savoir plus / More** :massage_woman:
-
-Pour revenir à la notion d'ontologie présentée dans l'idée générale de l'article, des exemples d'ontologies pour le cas de la cartographie sous-marine pourraient être :
-
-1. Animaux : crabe, anguille, étoile de mer, coquillage, poisson, calamar, requin, dauphin, corail, anémone de mer, etc... Pour aller plus loin on peut classer ce vocabulaire en deux groupes, celui des vertébrés et des invertébrés et ainsi établir les relations entre les éléments du vocabulaire et les groupes sous forme de ramifications.
-
-            les animaux (aquatiques)
-                     |
-              les vertébrés
-               /     |    \         
-         poisson, requin, dauphin, etc...
-
-2. plantes : algue, plancton, herbier marin, etc...
-
-3. Les dechets : le materiel de pêche, le plastiques, papier, caoutchouc, bois, etc...
+À la différence des images naturelles terrestres, les images sous-marines se caractérisent par une forte dominance de couleurs bleutées et verdâtres. Par ailleurs, la forte atténuation de la lumière dans l’eau par rapport à l’air et une plus forte diffusion de la lumière incidente ont pour conséquence de réduire considérablement la visibilité. Ainsi, des objets se trouvant à une distance lointaine du système d’acquisition ou de l’observateur mais aussi à une distance moyenne, voire même relativement courte dans certains cas, sont difficilement visibles et faiblement contrastés par rapport à leur environnement.
