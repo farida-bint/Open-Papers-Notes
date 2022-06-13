@@ -29,9 +29,9 @@ La méthode de l'article présenté dans ces notes, **STEGO**, permet de segment
 
 ## Method / Méthode
 
-STEGO apprend les représentations de features en maximisant l'alignement des motifs via une perte contrastive dans l'espace latent. L'objectif étant que le modèle produise des représentations similaires pour des images similaires. 
+**STEGO** apprend les représentations de features en maximisant l'alignement des motifs via une perte contrastive dans l'espace latent. L'objectif étant que le modèle produise des représentations similaires pour des images similaires. 
 
-De facon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
+De façon analogique a l'architecture classique d'un CNN, le processus entier de l'architecture du modèle peut être décrit en 3 étapes formant la partie baseline :
 
 > **Sélection des features / Extraction de caractéristiques**
 
@@ -39,17 +39,17 @@ La sélection des caractéristiques est le processus d'identification d'un sous-
 
 **1. Extraction**
 
-En utilisant un modèle pré-entrainé, DINO dans ce cas, que nous pouvons considérer une simple fonction $h = f_o$ pour cette étape, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
+Pour la sélection des features, **STEGO** utilise un modèle pré-entrainé, **DINO** qui est basé sur des mécanismes d'attention (au travers d'un transfor,ateur visuel). Nous pouvons considérer cette étape comme, une simple fonction $h = f_o$, qui vise à obtenir les descripteurs sémantiques (*feature maps*) pour une paire d'images en entrée.
 
 Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une matrice de caractéristiques $f_o(x)$, avec $f_o(x)[p]$ la représentation correspondante au pixel $p$. 
 
 **2. Réduction **
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse :slightly_smiling_face: ). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-Par conséquent pour la formation des clusters après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
+Par conséquent pour la formation des clusters, après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
 ![This is an image](images/STEGO_archi.png)
 
@@ -61,15 +61,15 @@ Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires
 
 - si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
-Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique , nous obtiendrons une forte similarité lorsque l'angle est proche de $0$, et une faible similarité sinon.
+Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique, nous obtiendrons une forte similarité lorsque l'angle est proche de $0$, et une faible similarité sinon.
 
 > **Minimisation de la perte**
 
-Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits (ils partagent un grand nombre de motifs similaires).
+Maintenant que nous avons nos deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits (ils partagent un grand nombre de motifs similaires).
 
 Puisque nous comparons deux vecteurs, le choix naturel des auteurs est le cosinus de similarité (comme expliqué plus haut).
 
-Pour calculer la perte du MLP, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites (étant d'assez bonne qualité que des images étiquettes) peuvent être considérées comme des pseudo-labels. 
+Pour calculer la perte du **MLP**, continuons l'analogie avec les **CNNs**, dans le cas d'un **CNN**, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites (étant d'assez bonne qualité que des images étiquettes) peuvent être considérées comme des pseudo-labels. 
 
 Cependant, au lieu d'essayer de classer un $z_i$ à un $h_j$, nous voudrions prédire si une paire ($z_i$, $h_j$) correspond ou pas. En d'autres mots, trouver si pour tout élément de z prédit, il y a **compatibilité** avec un élément de h.
 
