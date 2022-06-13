@@ -51,13 +51,14 @@ En projetant les images dans une représentation spatiale latente, le modèle es
 
 Par conséquent pour une meilleure formation des clusters, après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps. En effet, une grande dimensionnalité peut signifier des centaines, des milliers, voire des millions de features (ce qui entraine généralement le ralentissement de la convergence d'un algo de clustering). La fonction $z$ a pour but donc, de réduire la dimensionalité des feature maps, c'est à dire :
 
-- Projetez tous les points de données dans un sous-espace de dimension inférieure
-- Regroupez ces points dans ce sous-espace en utilisant un algorithme au choix (dans le cas de l'article il s'agit d'une fonction de similarité)
-- Au final $z$ crée une représentation de faible dimension des feature maps, tout en préservant au mieux la structure ou les relations les plus apparentes dans les données. 
+- Projetez tous les points de données des features extraites dans un sous-espace de dimension inférieure.
+- Regroupez ces points dans ce sous-espace en utilisant un algorithme au choix (dans le cas de l'article il s'agit d'une fonction de similarité).
+
+Au final $z$ crée une représentation de faible dimension des feature maps, tout en préservant au mieux la structure ou les relations les plus apparentes dans les données. 
 
 ![This is an image](images/STEGO_archi.png)
 
-Pour bien comprendre la fonction $z$, énoncons le problème à résoudre ici.
+Pour mieux comprendre la fonction $z$, énoncons le problème à résoudre ici :
 
 Soient $f$ et $g$ les features maps associées aux images $x$ et $y$ (similaires), les transformations $S(f)$ et $S(g)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des vecteurs de segmentation comme suit:
 
@@ -113,9 +114,9 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
 - En effet il y a classification (assignation à un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation courante des caractéristiques (segmentation features) et la méthode **K-Means** (la méthode utilisée dans l'article est celle du **Mini Batch K-Means**).
 
-  $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
+  $min_{y,\mu}\sum_{i,p} ||z_i[p]-\mu_{y_{ip}}||^2$
 
- où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
+ où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation ($z_i$ = S(f_o(x_i))$) et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
  
  > **Optimisation** 
 
