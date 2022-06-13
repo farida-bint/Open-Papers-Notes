@@ -89,11 +89,16 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
 
 - Calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max) :sweat_smile:
 
-              La fonction d'erreur calculée est donc : $L_simple-corr = \sum_{hwij} (F_hwij - b) * S_hwij$
+  La fonction d'erreur calculée est donc : $L_s = - \sum_{hwij} (F_hwij - b) * S_hwij$
 
-Pour deux vecteurs de segmentation jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
+Pour deux vecteurs de segmentation $s$ et $t$ jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces vecteurs si il existe une corrélation entre des points de données de leurs représentations $f$ et $g$, évoluant de la même façon. C'est à dire que, il existe des points de données de $f$ et $g$ qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
-Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer la distance entre les matrices de correlations des données en entrée et en sortie du module de classification (les poids de l'encodeur ne sont pas mis à jour). Le fonction d'erreur vise donc a minimiser cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (compactification).
+Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer **la distance** entre les matrices de correlations des données en entrée et en sortie du module de classification $F$et $S$ (les poids de l'extracteur ne sont pas mis à jour, le réseau est figé). 
+
+La fonction d'erreur vise donc à **minimiser** cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (le rapprochement entre les points de données au niveau du MLP produit des groupes donc des clusters).
+
+Petite anecdote : pourquoi il y a moins (-) devant la fonction d'erreur ?
+   A toutefois qu'il y a un problème de **maximisation**, il s'agit en réalité d'une minimisation de **l'opposé** d'une fonction de coût. :sunglasses:
 
 > Introduction des biais
 
@@ -101,13 +106,13 @@ Par addition au processus d'apprentissage décrit ci-dessus, les auteurs introdu
 
 > Clustering / Classification
 
-Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps réduites 
+Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps **réduites** (ce que j'ai appelé les vecteurs de segmentation). 
 
-- En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
+- En effet il y a classification (assignation à un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation courante des caractéristiques (segmentation features) et la méthode **K-Means** (la méthode utilisée dans l'article est celle du **Mini Batch K-Means**).
 
-              $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
+  $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
-où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
+ où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
 
 ---
 ## Takeaways / Résumé
