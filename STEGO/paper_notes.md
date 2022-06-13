@@ -45,7 +45,7 @@ Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une
 
 2. Réduction 
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
@@ -61,15 +61,17 @@ Soient $f$ et $g$ les features maps associées aux images i et j (similaires), l
 
 - si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
+Il est logique que lorsque deux vecteurs sont plus proches (angle plus petit entre eux) ensemble dans l'espace, ils sont plus similaires. Ainsi, si nous prenons le cosinus (angle entre les deux vecteurs) comme métrique , nous obtiendrons une forte similarité lorsque l'angle est proche de 0, et une faible similarité sinon.
+
 > Minimisation de la perte
 
-Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les cartes de segmentations $z$ produites (niveau des caractéristiques : haut).
+Maintenant que nous avons deux vecteurs, $z$ , nous avons besoin d'un moyen de quantifier la similarité entre eux. Notons ici que, pour deux images similaires, il devrait avoir une grande correspondance entre les vecteurs de segmentation $z$ produits.
 
-Puisque nous comparons deux vecteurs, le choix naturel est le cosinus de similarité.
+Puisque nous comparons deux vecteurs, le choix naturel des auteurs est le cosinus de similarité (comme expliqué plus haut).
 
-Pour calculer la perte du modèle, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites sont considérés comme des pseudo-labels. 
+Pour calculer la perte du MLP, continuons l'analogie avec les CNN, dans le cas d'un CNN, il faut comparer les prédictions avec les labels, dans notre cas nous avons pas de labels mais rappelons quand même qu'à l'étape 1, les features maps produites sont considérés comme des pseudo-labels. 
 
-Cependant, au lieu de classer un $z_i$ à un $h_i'$, nous voudrions prédire si une paire ($z_i$, $h_i'$) correspond ou pas. En d'autres mots, trouver si pour tout élément de z prédit, il y a compatibilité avec un élément de h.
+Cependant, au lieu d'essayer de classer un $z_i$ à un $h_j$, nous voudrions prédire si une paire ($z_i$, $h_j$) correspond ou pas. En d'autres mots, trouver si pour tout élément de z prédit, il y a compatibilité avec un élément de h.
 
 En un langage plus compréhensible, l'objectif est de maximiser l'alignement de deux images similaires (ne pas oublier le cas d'images non similaires), ce qui revient à :
 
