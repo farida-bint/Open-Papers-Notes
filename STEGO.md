@@ -47,7 +47,9 @@ En projetant les images dans une représentation spatiale latente, le modèle es
 
 Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquent l'algorithme de clustering sur les feature maps réduites 
 
-- Clustering de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode k-means (la méthode utilisée dans le cadre de travail est celle du **Mini Batch K-Means**).
+- En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
+
+$min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
 où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
 
