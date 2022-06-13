@@ -87,9 +87,9 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
 
 - Production de la matrice de correspondance entre les vecteurs
 
-- Calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max :sunglasses:)
+- Calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max) :sweat_smile:
 
-  $\sum_{hwij} (F_hwij - b) * S_hwij$
+              La fonction d'erreur calculée est donc : $L_simple-corr = \sum_{hwij} (F_hwij - b) * S_hwij$
 
 Pour deux vecteurs de segmentation jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces cartes si il existe une corrélation entre des points de données de leurs pseudo-labels, évoluant de la même façon. C'est à dire que, il existe des points de données des pseudo-labels qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
@@ -105,7 +105,7 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
 - En effet il y a classification (assignation a un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation actuelle des caractéristiques et la méthode K-Means (la méthode utilisée dans le cadre de ce travail est celle du **Mini Batch K-Means**).
 
-  $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
+              $min_{y,\mu}\sum_{i,p} ||f_\theta(x_i)[p]-\mu_{y_{ip}}||^2$
 
 où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel de la $i$ème image et $\mu_k$ désigne le point central (centre de gravité) du kème cluster.
 
