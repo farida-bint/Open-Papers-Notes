@@ -116,6 +116,8 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
   $min_{y,\mu}\sum_{i,p} ||z_i[p]-\mu_{y_{ip}}||^2$
 
+K-Means try attempting to minimize the total within-cluster distances between each data point and its corresponding prototype.
+
  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation ($z_i$ = S(f_o(x_i))$) et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
  
  > **Optimisation** 
