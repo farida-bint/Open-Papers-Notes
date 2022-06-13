@@ -45,19 +45,19 @@ Soit une image non étiquétée $x_i(i=1,...,n)$, l'extracteur $f_o$ obtient une
 
 2. Réduction 
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de segmentation, $z = g(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
+Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un MLP appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
-Par conséquent pour la formation des clusters apres extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
+Par conséquent pour la formation des clusters après extraction des caractéristiques, il nous faut appliquer une transformation $z$ sur ces features maps (fonction de correspondance d'une dimension $D$ vers une dimension $d$ plus petite)
 
-![This is an image](Images/STEGO.draw.io.png)
+![This is an image](images/STEGO_archi.png)
 
-Pour bien comprendre cette fonction, énoncons le problème a résoudre ici.
+Pour bien comprendre cette fonction, énoncons le problème à résoudre ici.
 
-Soient $h_i$ et $h_j$ les features maps associées aux images i et j (similaires), les transformations $g(h_i)$ et $g(h_j)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des cartes de segmentations comme suit:
+Soient $f$ et $g$ les features maps associées aux images i et j (similaires), les transformations $S(f)$ et $S(g)$ (qui permettent de préserver la relation de voisinage entre les points de données) produisent des vecteurs de segmentation comme suit:
 
-- si deux points de données sont similaires avant la transformation, ils doivent être plus proches apres la transformation, c'est à dire que la distance entre eux doit être petite (*small*)
+- si deux points de données sont similaires avant la transformation, ils doivent être plus proches après la transformation, c'est à dire que la distance entre eux doit être petite (*small*)
 
 - si deux points de données sont différents avant la transformation, ils doivent être éloignés l'un de l'autre, c'est à dire que la distance entre les deux doit être grande (*large*)
 
