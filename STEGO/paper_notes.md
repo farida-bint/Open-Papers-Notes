@@ -84,19 +84,30 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
  
 3. La matrice $S$ est donc comparer à la matrice étiquette $F$ pour évaluer leur niveau de compatibilité.
 
-- Est-ce qu'il y a compatibilité entre les prédictions et les étiquettes ? Si non, alors le rapprochement qui a été effectué dans l'espace latent est à revoir et pour cela, mise à jour des poids du MLP.
+Récapitulons ces 3 étapes sous forme d'un pseudo-code,
 
-- Nouveaux regroupements des points de données des $2$ vecteurs $z$
+  soit $F$ la matrice de correspondance des feature maps $f$ et $g$
+  soit $S$ la matrice de correspondance des vecteurs $s$ et $t$ 
+  tant que ( (F, S) non compatible ) faire
+       mise a jour des poids du MLP
+       projection de $f$ et $g$ dans un sous-espace
+       $s$ <- regroupement des points de données de $f$
+       $t$ <- regroupement des points de données de $g$
+       calculer $S$ // correlation entre $s$ et $t$
+       comparer ($F$, $S$)
+   Fin tant que
 
-- Production de la matrice de correspondance entre les vecteurs
+Pour résumer, le MLP essaye de maximiser l'alignement des vecteurs $z$ et des features maps par un calcul de correlation croisée (utilisée pour comparer plusieurs séries chronologiques et déterminer objectivement dans quelle mesure elles correspondent les unes aux autres et, en particulier, à quel moment la meilleure correspondance se produit). La plage possible pour le score de corrélation des données est de -1 à +1. Plus la valeur de corrélation croisée est proche de 1, plus les ensembles sont identiques.
 
-- Calcul de l'erreur avec la matrice étiquette, puis la boucle recommence ! (jusqu'a ce l'erreur soit minimisée au max) :sweat_smile:
+Pour calculer la corrélation croisée de deux matrices, il suffit d'additionner les produits élément par élément pour chaque décalage de la seconde matrice par rapport à la première (si les deux matrices ont des tailles différentes, la fonction ajoute des zéros à la fin de la matrice la plus courte pour qu'elle ait la même longueur que l'autre).
 
-  La fonction d'erreur calculée est donc : $L_s = - \sum_{hwij} (F_hwij - b) * S_hwij$
+  La fonction d'erreur calculée est donc : $L_s = - \sum_{hwij} (F_{hwij} - b) * S_{hwij}$
+  
+  ou $F_{hwij}$ est la matrice de correspondance de $f_{hw}$ et $g_{ij}, $S_{hwij}$ est la matrice de correspondance de $s$ et $t$, $b$ représente la préssion négative ajoutée pour éviter que le modele ne produise des représentations identiques pour des ensembles (ou des paires) similaires. En effet, si ce dernier fait correspondre tous les éléments de $F$ a tout les éléments de $S$ alors il retournera toujours 1.
 
 Pour deux vecteurs de segmentation $s$ et $t$ jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces vecteurs si il existe une corrélation entre des points de données de leurs représentations $f$ et $g$, évoluant de la même façon. C'est à dire que, il existe des points de données de $f$ et $g$ qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
-Pour résumé, en fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer **la distance** entre les matrices de correlations des données en entrée et en sortie du module de classification $F$et $S$ (les poids de l'extracteur ne sont pas mis à jour, le réseau est figé). 
+En fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer **la distance** entre les matrices de correlations des données en entrée et en sortie du module de classification $F$et $S$ (les poids de l'extracteur ne sont pas mis à jour, le réseau est figé). 
 
 La fonction d'erreur vise donc à **minimiser** cette distance de façon à maximiser l'alignement des prédictions et des pseudo-labels. Le résultat de cette étape est d'accentuer la structure des clusters identifiés (le rapprochement entre les points de données au niveau du MLP produit des groupes donc des clusters).
 
@@ -115,10 +126,11 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 - En effet il y a classification (assignation à un cluster), de chaque pixel d'une image dans le jeu de données en utilisant la représentation courante des caractéristiques (segmentation features) et la méthode **K-Means** (la méthode utilisée dans l'article est celle du **Mini Batch K-Means**).
 
   $min_{y,\mu}\sum_{i,p} ||z_i[p]-\mu_{y_{ip}}||^2$
+  
+  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation ($z_i$ = S(f_o(x_i))$) et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
 
-K-Means try attempting to minimize the total within-cluster distances between each data point and its corresponding prototype.
-
- où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation ($z_i$ = S(f_o(x_i))$) et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
+K-means minimise la variance intra-cluster; c'est-à-dire que les clusters découverts minimisent la somme des distances au carré entre les points de données et le centre (centre de gravité) de leur cluster corrspondant.
+ 
  
  > **Optimisation** 
 
