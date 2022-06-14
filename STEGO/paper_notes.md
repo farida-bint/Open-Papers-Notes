@@ -87,14 +87,23 @@ En un langage plus compréhensible, l'objectif est de maximiser l'alignement de 
 Récapitulons ces 3 étapes sous forme d'un pseudo-code,
 
   soit $F$ la matrice de correspondance des feature maps $f$ et $g$
-  soit $S$ la matrice de correspondance des vecteurs $s$ et $t$ 
+  
+  soit $S$ la matrice de correspondance des vecteurs $s$ et $t$
+  
   tant que ( (F, S) non compatible ) faire
+  
        mise à jour des poids du MLP
+       
        projection de $f$ et $g$ dans un sous-espace
+       
        $s$ <- regroupement des points de données de $f$
+       
        $t$ <- regroupement des points de données de $g$
+       
        calculer $S$ // correlation entre $s$ et $t$
+       
        comparer ($F$, $S$)
+       
    Fin tant que
 
 Pour résumer, le MLP essaye de maximiser l'alignement des vecteurs $z$ et des features maps par un calcul de correlation croisée (utilisée pour comparer plusieurs séries chronologiques et déterminer objectivement dans quelle mesure elles correspondent les unes aux autres et, en particulier, à quel moment la meilleure correspondance se produit). La plage possible pour le score de corrélation des données est de -1 à +1. Plus la valeur de corrélation croisée est proche de 1, plus les ensembles sont identiques.
