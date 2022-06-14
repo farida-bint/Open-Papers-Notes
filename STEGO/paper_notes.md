@@ -24,7 +24,7 @@ Plus précisément, nous avons une image et nous l'augmentons de différentes ma
 
 ## Main Idea / Idée générale
 
-La méthode de l'article présenté dans ces notes, **STEGO**, permet de segmenter (sémantiquement) le contenu des images d'un corpus, en des **ontologies connues.** Notons ici que, le terme **ontologie** renvoie à **une classe d'objets** du monde réel. En d'autres mots, la méthode **STEGO** consiste pour une image, à prédire des classes pour chaque objet qui ont les mêmes motifs que les features de ces derniers. Pour ce faire, les auteurs prennent des images et les caractérisent à l'aide d'un transformateur visuel qu'ils ont figé à l'avance, puis extraient la matrice de corrélation de ces features pour servir de signal de supervision. En outre, ils apprennent une légère transformation qu'ils appellent la tête de segmentation, qui n'est simplement qu'un réseau de projection où se tient une réduction de dimensionnalité, ce qui produira des representations de segmentation. Ces dernières distilleront et amplifieront probablement la structure des features. À la fin, les auteurs répliquent ce processus sur des paires, d'images et de k-voisins les plus proches, sur des images et elles mêmes, sur des images et d'autres images aléatoires de la même collection d'images en entrée.
+La méthode de l'article présenté dans ces notes, **STEGO**, permet de segmenter (sémantiquement) le contenu des images d'un corpus, en des **ontologies connues.** Notons ici que, le terme **ontologie** renvoie à **une classe d'objets** du monde réel. En d'autres mots, la méthode **STEGO** consiste pour une image, à prédire des classes pour chaque objet qui ont les mêmes motifs que les features de ces derniers. Pour ce faire, les auteurs prennent des images et les caractérisent à l'aide d'un transformateur visuel qu'ils ont figé à l'avance, puis extraient la matrice de corrélation de ces features pour servir de signal de supervision. En outre, ils apprennent une légère transformation qu'ils appellent la tête de segmentation, qui n'est simplement qu'un réseau de projection où se tient une réduction de dimensionnalité, ce qui produira des representations de segmentation. Ces dernières distilleront et amplifieront probablement la structure des features. Puisque la méthode fonctionne avec une paire d'images en entrée, les auteurs répliquent ce processus sur des paires d'images et de leurs k-voisins les plus proches (dans le dataset), sur des images et elles mêmes (versions augmentées), sur des images et d'autres images aléatoires (différente ou non similaire) du même jeu de données (l'objectif ici est d'éetudier la dissimilarité des images).
 
 
 ## Method / Méthode
@@ -45,7 +45,7 @@ Soit une image non étiquétée $x$, l'extracteur $f_o$ fournit une matrice de c
 
 **2. Réduction**
 
-Les sorties de $f_o$ sont ensuite utilisées comme entrée dans un **MLP** (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse). Les auteurs ont montré que cette étape améliore les performances du modèle.
+Les sorties de $f_o$ sont ensuite utilisées comme entrées dans un **MLP** (réseau entièrement connecté) appélé tête de segmentation, $z = S(h)$ pour transformer les données en entrée dans un autre espace (ici il s'agit de l'espace de code des couleurs RVB, ça c'est mon hypothèse). Les auteurs ont montré que cette étape améliore les performances du modèle.
 
 En projetant les images dans une représentation spatiale latente, le modèle est capable d'apprendre les caractéristiques de haut niveau. En effet, en continuant d'entrainer le modèle pour maximiser la similarité vectorielle entre des images similaires, nous pouvons imaginer que le modèle apprend des groupes de points de données similaires dans l'espace latent.
 
@@ -89,7 +89,7 @@ Récapitulons ces 3 étapes sous forme d'un pseudo-code,
   soit $F$ la matrice de correspondance des feature maps $f$ et $g$
   soit $S$ la matrice de correspondance des vecteurs $s$ et $t$ 
   tant que ( (F, S) non compatible ) faire
-       mise a jour des poids du MLP
+       mise à jour des poids du MLP
        projection de $f$ et $g$ dans un sous-espace
        $s$ <- regroupement des points de données de $f$
        $t$ <- regroupement des points de données de $g$
@@ -103,9 +103,9 @@ Pour calculer la corrélation croisée de deux matrices, il suffit d'additionner
 
   La fonction d'erreur calculée est donc : $L_s = - \sum_{hwij} (F_{hwij} - b) * S_{hwij}$
   
-  ou $F_{hwij}$ est la matrice de correspondance de $f_{hw}$ et $g_{ij}, $S_{hwij}$ est la matrice de correspondance de $s$ et $t$, $b$ représente la préssion négative ajoutée pour éviter que le modele ne produise des représentations identiques pour des ensembles (ou des paires) similaires. En effet, si ce dernier fait correspondre tous les éléments de $F$ a tout les éléments de $S$ alors il retournera toujours 1.
+  où $F_{hwij}$ est la matrice de correspondance de $f_{hw}$ et $g_{ij}, $S_{hwij}$ est la matrice de correspondance de $s$ et $t$, $b$ représente la préssion négative ajoutée pour éviter que le modèle ne produise des représentations identiques pour des ensembles (ou des paires) similaires. En effet, si ce dernier fait correspondre tous les éléments de $F$ à tout les éléments de $S$ alors il retournera toujours 1 (pas d'apprentissage).
 
-Pour deux vecteurs de segmentation $s$ et $t$ jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces vecteurs si il existe une corrélation entre des points de données de leurs représentations $f$ et $g$, évoluant de la même façon. C'est à dire que, il existe des points de données de $f$ et $g$ qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
+Pour deux vecteurs de segmentation $s$ et $t$ jugés similaires, le module de perte essaye de rapprocher les points de données similaires de ces vecteurs si, il existe une corrélation entre des points de données de leurs représentations $f$ et $g$, évoluant de la même façon. C'est à dire que, il existe des points de données de $f$ et $g$ qui, lorsqu'ils sont proches produisent des vecteurs de segmentation similaires et lorsqu'ils sont différents produisent des vecteurs différents.
 
 En fonction du résultat de correspondance entre les vecteurs de segmentations, on doit aligner / éloigner les prédictions avec les pseudo-labels. Ce qui revient à calculer **la distance** entre les matrices de correlations des données en entrée et en sortie du module de classification $F$et $S$ (les poids de l'extracteur ne sont pas mis à jour, le réseau est figé). 
 
@@ -127,7 +127,7 @@ Après avoir réduit la dimensionnalité des vecteurs $z$, les auteurs appliquen
 
   $min_{y,\mu}\sum_{i,p} ||z_i[p]-\mu_{y_{ip}}||^2$
   
-  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation ($z_i$ = S(f_o(x_i))$) et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
+  où $y_{ip}$ désigne l'étiquette de cluster du $p$ème pixel du $i$ème vecteur de segmenation $z_i$ = S(f_o(x_i))$ et $\mu_k$ désigne le point central (centre de gravité) du $k$ème cluster.
 
 K-means minimise la variance intra-cluster; c'est-à-dire que les clusters découverts minimisent la somme des distances au carré entre les points de données et le centre (centre de gravité) de leur cluster corrspondant.
  
